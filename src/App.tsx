@@ -41,11 +41,13 @@ function App() {
     sampleData,
   ]);
   const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
+    setIsLoading(true);
     try {
       const response = await fetch(
         `https://pinyin-api.atsui.click/transliteration?q=${encodeURIComponent(inputValue)}`,
@@ -55,6 +57,8 @@ function App() {
       setInputValue("");
     } catch (error) {
       console.error("Error fetching transliteration:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -64,14 +68,21 @@ function App() {
       {transliterations.map((snippet, idx) => (
         <Snippet key={idx} snippet={snippet} index={idx} />
       ))}
-      <form onSubmit={handleSubmit}>
+      <form className="p-4" onSubmit={handleSubmit}>
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter Chinese text"
+          className="mr-4"
         />
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+          ) : (
+            "Submit"
+          )}
+        </button>
       </form>
     </>
   );
