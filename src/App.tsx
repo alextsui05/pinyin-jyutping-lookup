@@ -29,7 +29,7 @@ function Snippet({
   console.log(index);
   return (
     <div key={key} className={`${backgroundColor} p-4 rounded-lg`}>
-      <p className={`${fontSize} font-bold`}>{query}</p>
+      <p className={`${fontSize} font-bold mb-10`}>{query}</p>
       <p>{jyutping}</p>
       <p>{pinyin}</p>
     </div>
@@ -64,7 +64,7 @@ function App() {
 
   return (
     <>
-      <h1>Chinese Snippets</h1>
+      <h1>Pinyin Jyutping Lookup</h1>
       {transliterations.map((snippet, idx) => (
         <Snippet key={idx} snippet={snippet} index={idx} />
       ))}
