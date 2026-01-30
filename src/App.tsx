@@ -19,17 +19,16 @@ function Snippet({ query, jyutping, pinyin }: SnippetData) {
 }
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [transliterations, setTransliterations] = useState<SnippetData[]>([
+    sampleData,
+  ]);
 
   return (
     <>
       <h1>Chinese Snippets</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-      <Snippet {...sampleData} />
+      {transliterations.map((snippet) => (
+        <Snippet {...snippet} />
+      ))}
     </>
   );
 }
