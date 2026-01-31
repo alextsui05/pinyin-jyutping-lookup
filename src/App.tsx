@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import sampleData from "./assets/sample.json";
 
@@ -59,7 +59,10 @@ function Snippet({
       ));
 
   return (
-    <div key={key} className={`${backgroundColor} p-4 rounded-lg my-2`}>
+    <div
+      key={key}
+      className={`${backgroundColor} p-4 rounded-lg my-2 dark:bg-gray-700 dark:bg-gray-800`}
+    >
       <div className="flex justify-between items-center">
         <div className="ml-4">
           <p>{activeReading}</p>
@@ -67,13 +70,13 @@ function Snippet({
         <div>
           <button
             onClick={() => onToggleTraditional(index)}
-            className="px-4 py-2 m-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 m-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors dark:bg-gray-600 dark:hover:bg-gray-500"
           >
             {isTraditional ? "简" : "繁"}
           </button>
           <button
             onClick={() => onTogglePinyin(index)}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors dark:bg-gray-600 dark:hover:bg-gray-500"
           >
             {isPinyin ? "國" : "粵"}
           </button>
@@ -82,8 +85,8 @@ function Snippet({
 
       <div className="mb-6"></div>
 
-      <div className="mt-4 pt-4 border-t border-gray-300">
-        <p className="text-base">
+      <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+        <p className="text-base dark:text-white">
           <strong>Original:</strong> {query}
         </p>
       </div>
@@ -99,12 +102,19 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isTraditionalByDefault, setIsTraditionalByDefault] = useState(true);
   const [isPinyinByDefault, setIsPinyinByDefault] = useState(true);
+  const [isDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
   const [traditionalModes, setTraditionalModes] = useState<boolean[]>([
     isTraditionalByDefault,
   ]);
   const [pinyinModes, setPinyinModes] = useState<boolean[]>([
     isPinyinByDefault,
   ]);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", isDarkMode.toString());
+  }, [isDarkMode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,7 +162,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className={isDarkMode ? "dark" : ""}>
       <div className="flex justify-between items-center mb-6">
         <h1>Pinyin Jyutping Lookup</h1>
         <div>
@@ -172,7 +182,7 @@ function App() {
         </div>
       </div>
       <div className="text-left">
-        <p>
+        <p className="dark:text-gray-300">
           This is a tool to look up pinyin and jyutping for Chinese characters.
           All you need to do is copy and paste in a snippet of Chinese in the
           input box at the bottom of the page, and the Mandarin and Cantonese
@@ -199,7 +209,7 @@ function App() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter Chinese text"
-          className="mr-4 border border-gray-300 rounded px-4 py-2 w-full"
+          className="mr-4 border border-gray-300 rounded px-4 py-2 w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         />
         <button
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
@@ -207,13 +217,13 @@ function App() {
           disabled={isLoading}
         >
           {isLoading ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 dark:border-white"></div>
           ) : (
             "Submit"
           )}
         </button>
       </form>
-    </>
+    </div>
   );
 }
 
