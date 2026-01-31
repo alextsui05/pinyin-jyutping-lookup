@@ -1,1 +1,15 @@
-{ "query": "\u4e2d\u6587", "pinyin": "zhong1wen2", "jyutping": "zung1man4" }
+{
+  "query": "中文",
+  "pinyin": "zhong1wen2",
+  "jyutping": "zung1man4",
+  "trad": {
+    "text": "中文",
+    "pinyin_by_words": [["中文", "zhong1wen2"]],
+    "jyutping_by_words": [["中文", "zung1man4"]]
+  },
+  "simp": {
+    "text": "中文",
+    "pinyin_by_words": [["中文", "zhong1wen2"]],
+    "jyutping_by_words": [["中文", "zung1man4"]]
+  }
+}
