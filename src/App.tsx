@@ -22,12 +22,16 @@ function Snippet({
   snippet,
   key,
   index,
+  isTraditional,
 }: {
   snippet: SnippetData;
   key: number;
   index: number;
+  isTraditional: boolean;
 }) {
   const { query, jyutping, pinyin, trad, simp } = snippet;
+  const activeVariant = isTraditional ? trad : simp;
+  const variantLabel = isTraditional ? "Traditional" : "Simplified";
   let fontSize = "text-8xl";
   if (query.length > 10) {
     fontSize = "text-6xl";
@@ -39,38 +43,19 @@ function Snippet({
   console.log(index);
   return (
     <div key={key} className={`${backgroundColor} p-4 rounded-lg`}>
-      <p className={`${fontSize} font-bold mb-10`}>{query}</p>
+      <p className={`${fontSize} font-bold mb-10`}>{activeVariant.text}</p>
 
       <div className="mb-6">
-        <h3 className="font-semibold text-lg mb-2">Traditional: {trad.text}</h3>
         <div className="ml-4">
           <p className="text-sm text-gray-600">Pinyin by words:</p>
           <p>
-            {trad.pinyin_by_words
+            {activeVariant.pinyin_by_words
               .map(([word, pinyin]) => `${word} (${pinyin})`)
               .join(" ")}
           </p>
           <p className="text-sm text-gray-600 mt-2">Jyutping by words:</p>
           <p>
-            {trad.jyutping_by_words
-              .map(([word, jyutping]) => `${word} (${jyutping})`)
-              .join(" ")}
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="font-semibold text-lg mb-2">Simplified: {simp.text}</h3>
-        <div className="ml-4">
-          <p className="text-sm text-gray-600">Pinyin by words:</p>
-          <p>
-            {simp.pinyin_by_words
-              .map(([word, pinyin]) => `${word} (${pinyin})`)
-              .join(" ")}
-          </p>
-          <p className="text-sm text-gray-600 mt-2">Jyutping by words:</p>
-          <p>
-            {simp.jyutping_by_words
+            {activeVariant.jyutping_by_words
               .map(([word, jyutping]) => `${word} (${jyutping})`)
               .join(" ")}
           </p>
@@ -95,6 +80,7 @@ function App() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isTraditional, setIsTraditional] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,11 +101,28 @@ function App() {
     }
   };
 
+  const switchVariantHandler = () => {
+    setIsTraditional(!isTraditional);
+  };
+
   return (
     <>
-      <h1>Pinyin Jyutping Lookup</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1>Pinyin Jyutping Lookup</h1>
+        <button
+          onClick={switchVariantHandler}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          {isTraditional ? "Switch to Simplified" : "Switch to Traditional"}
+        </button>
+      </div>
       {transliterations.map((snippet, idx) => (
-        <Snippet key={idx} snippet={snippet} index={idx} />
+        <Snippet
+          key={idx}
+          snippet={snippet}
+          index={idx}
+          isTraditional={isTraditional}
+        />
       ))}
       <form className="p-4" onSubmit={handleSubmit}>
         <input
