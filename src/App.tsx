@@ -31,7 +31,6 @@ function Snippet({
 }) {
   const { query, jyutping, pinyin, trad, simp } = snippet;
   const activeVariant = isTraditional ? trad : simp;
-  const variantLabel = isTraditional ? "Traditional" : "Simplified";
   let fontSize = "text-8xl";
   if (query.length > 10) {
     fontSize = "text-6xl";
