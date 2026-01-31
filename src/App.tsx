@@ -20,7 +20,7 @@ type SnippetData = {
 
 function WordReading({ word, reading }: { word: string; reading: string }) {
   return (
-    <div className="inline-block">
+    <div className="inline-block text-center">
       <div className="text-6xl font-bold">{word}</div>
       <div className="text-xs">{reading}</div>
     </div>
@@ -65,7 +65,7 @@ function Snippet({
     >
       <div className="flex justify-between items-center">
         <div className="ml-4">
-          <p>{activeReading}</p>
+          <p className="text-left">{activeReading}</p>
         </div>
         <div>
           <button
