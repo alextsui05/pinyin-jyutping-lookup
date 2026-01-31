@@ -23,11 +23,13 @@ function Snippet({
   key,
   index,
   isTraditional,
+  onToggleTraditional,
 }: {
   snippet: SnippetData;
   key: number;
   index: number;
   isTraditional: boolean;
+  onToggleTraditional: (index: number) => void;
 }) {
   const { query, jyutping, pinyin, trad, simp } = snippet;
   const activeVariant = isTraditional ? trad : simp;
@@ -39,10 +41,17 @@ function Snippet({
   if (index % 2 === 1) {
     backgroundColor = "bg-gray-100";
   }
-  console.log(index);
   return (
-    <div key={key} className={`${backgroundColor} p-4 rounded-lg`}>
-      <p className={`${fontSize} font-bold mb-10`}>{activeVariant.text}</p>
+    <div key={key} className={`${backgroundColor} p-4 rounded-lg my-2`}>
+      <div className="flex justify-between items-center">
+        <p className={`${fontSize} font-bold m-5`}>{activeVariant.text}</p>
+        <button
+          onClick={() => onToggleTraditional(index)}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+        >
+          {isTraditional ? "简" : "繁"}
+        </button>
+      </div>
 
       <div className="mb-6">
         <div className="ml-4">
@@ -79,7 +88,10 @@ function App() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isTraditional, setIsTraditional] = useState(true);
+  const [isTraditionalByDefault, setIsTraditionalByDefault] = useState(true);
+  const [traditionalModes, setTraditionalModes] = useState<boolean[]>([
+    isTraditionalByDefault,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +104,7 @@ function App() {
       );
       const data: SnippetData = await response.json();
       setTransliterations([...transliterations, data]);
+      setTraditionalModes([...traditionalModes, isTraditionalByDefault]);
       setInputValue("");
     } catch (error) {
       console.error("Error fetching transliteration:", error);
@@ -100,27 +113,39 @@ function App() {
     }
   };
 
-  const switchVariantHandler = () => {
-    setIsTraditional(!isTraditional);
+  const switchTraditionalByDefaultHandler = () => {
+    setIsTraditionalByDefault(!isTraditionalByDefault);
+  };
+
+  const toggleTraditionalMode = (index: number) => {
+    setTraditionalModes((prev) => {
+      const newModes = [...prev];
+      newModes[index] = !newModes[index];
+      return newModes;
+    });
   };
 
   return (
     <>
       <div className="flex justify-between items-center mb-6">
         <h1>Pinyin Jyutping Lookup</h1>
-        <button
-          onClick={switchVariantHandler}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-        >
-          {isTraditional ? "Switch to Simplified" : "Switch to Traditional"}
-        </button>
+        <div>
+          <span className="mr-2">Default:</span>
+          <button
+            onClick={switchTraditionalByDefaultHandler}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            {isTraditionalByDefault ? "繁" : "简"}
+          </button>
+        </div>
       </div>
       {transliterations.map((snippet, idx) => (
         <Snippet
           key={idx}
           snippet={snippet}
           index={idx}
-          isTraditional={isTraditional}
+          isTraditional={traditionalModes[idx] ?? isTraditionalByDefault}
+          onToggleTraditional={toggleTraditionalMode}
         />
       ))}
       <form className="p-4" onSubmit={handleSubmit}>
